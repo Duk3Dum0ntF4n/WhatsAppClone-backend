@@ -1,6 +1,7 @@
 package com.ocean.plugins
 
 import com.ocean.data.database.Chat
+import com.ocean.data.database.exposed.ExposedChat
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -8,15 +9,13 @@ import io.ktor.server.routing.*
 
 fun Application.configureRouting() {
     routing {
-        get("/") {
-            call.respondText("Hello World!")
-        }
         allUserChatsRoute()
+        addChatRoute()
     }
 }
 
 fun Route.allUserChatsRoute() {
-    get("/chats/{username}") {
+    get("/chat/{username}") {
         val username = call.parameters["username"]
             ?: return@get call.respondText(
                 "MissingChat",
@@ -28,5 +27,25 @@ fun Route.allUserChatsRoute() {
                 status = HttpStatusCode.NotFound
             )
         call.respond(chats)
+    }
+}
+
+fun Route.addChatRoute() {
+    get("/chat/create/{username}") {
+        val username = call.parameters["username"]
+            ?: return@get call.respondText(
+                "missing username",
+                status = HttpStatusCode.BadRequest
+            )
+        Chat.createChat(
+            ExposedChat(
+                user1 = "test_1",
+                user2 = username
+            )
+        )
+        call.respondText(
+            "chat created successfully",
+            status = HttpStatusCode.OK
+        )
     }
 }
