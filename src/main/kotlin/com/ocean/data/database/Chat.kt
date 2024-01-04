@@ -7,6 +7,7 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.union
 
 object Chat : Table("chat") {
 
@@ -22,26 +23,25 @@ object Chat : Table("chat") {
             it[user1] = chat.user1
             it[user2] = chat.user2
         }
-        Chat.insert {
-            it[user1] = chat.user2
-            it[user2] = chat.user1
-        }
     }
 
     suspend fun allChats(username: String): List<ChatDTO>? {
-        return try {
-            dbQuery {
-                Chat.select { Chat.user1 eq username }
-                    .map {
-                        ChatDTO(
-                            username = it[user2],
-                            id = it[id].toString()
-                        )
-                    }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            emptyList()
+        return dbQuery {
+            Chat.select {
+                Chat.user1 eq username}
+                .union(Chat.select {
+                    Chat.user2 eq username
+                })
+                .map {
+                    ChatDTO(
+                        username = if (it[user1] == username) {
+                            it[user2]
+                        } else {
+                            it[user1]
+                        },
+                        id = it[id].toString()
+                    )
+                }
         }
     }
 }
