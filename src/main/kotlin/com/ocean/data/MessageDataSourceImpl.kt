@@ -1,6 +1,6 @@
 package com.ocean.data
 
-import com.ocean.data.model.MessageDTO
+import com.ocean.data.dto.MessageDTO
 
 class MessageDataSourceImpl (
 

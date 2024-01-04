@@ -9,15 +9,15 @@ import org.jetbrains.exposed.sql.*
 
 fun Application.configureDatabases() {
     val database = Database.connect(
-            url = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1",
-            user = "root",
-            driver = "org.h2.Driver",
-            password = ""
-        )
+        url = "jbdc:postgresql://localhost:5432/akizi",
+        driver = "org.postgresql.Driver",
+        user = "postgres",
+        password = "postgres"
+    )
     val userService = UserService(database)
     routing {
         // Create user
-        post("/users") {
+        post("/chats") {
             val user = call.receive<ExposedUser>()
             val id = userService.create(user)
             call.respond(HttpStatusCode.Created, id)
