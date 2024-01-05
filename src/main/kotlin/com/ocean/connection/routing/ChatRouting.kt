@@ -25,11 +25,7 @@ fun Route.allUserChatsRoute() {
                 "MissingChat",
                 status = HttpStatusCode.BadRequest
             )
-        val chats = Chat.allChats(username)
-            ?: return@get call.respondText(
-                "No such username",
-                status = HttpStatusCode.NotFound
-            )
+        val chats = Chat.getUserChats(username)
         call.respond(chats)
     }
 }

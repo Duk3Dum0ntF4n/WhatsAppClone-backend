@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MessageReceiveRemote(
     val text: String,
-    val chat_id: String
+    val chatId: String
 )

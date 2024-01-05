@@ -27,6 +27,8 @@ fun main() {
 }
 
 fun Application.module() {
+    configureSockets()
+    configureSecurity()
     configureSerialization()
     configureUserRouting()
     configureChatRouting()

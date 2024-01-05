@@ -25,28 +25,24 @@ object Chat : Table("chat") {
         }
     }
 
-    suspend fun allChats(username: String): List<ChatResponseRemote>? {
-        return try{
-            dbQuery {
-                Chat.select {
-                    user1 eq username}
-                    .union(Chat.select {
-                        user2 eq username
-                    })
-                    .map {
-                        ChatResponseRemote(
-                            username = if (it[user1] == username) {
-                                it[user2]
-                            } else {
-                                it[user1]
-                            },
-                            id = it[id].toString()
-                        )
-                    }
+    suspend fun getUserChats(username: String): List<ChatResponseRemote> {
+        return dbQuery {
+            Chat.select {
+                user1 eq username
             }
-        } catch (e:Exception) {
-            e.printStackTrace()
-            null
+                .union(Chat.select {
+                    user2 eq username
+                })
+                .map {
+                    ChatResponseRemote(
+                        username = if (it[user1] == username) {
+                            it[user2]
+                        } else {
+                            it[user1]
+                        },
+                        id = it[id].toString()
+                    )
+                }
         }
     }
 }
