@@ -1,18 +1,15 @@
-package com.ocean.connection.routing
+package com.ocean.plugins
 
 import com.ocean.connection.ConnectionController
 import com.ocean.connection.remote.MessageReceiveRemote
 import com.ocean.connection.session.MessengerSession
-import com.ocean.database.Message
-import com.ocean.database.exposed.ExposedMessage
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
-import io.ktor.server.request.receive
 import io.ktor.server.response.respond
+import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
-import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 import io.ktor.server.sessions.get
 import io.ktor.server.sessions.sessions
@@ -25,14 +22,16 @@ import kotlinx.coroutines.channels.consumeEach
 import kotlinx.serialization.json.Json
 
 fun Application.configureMessageRouting() {
+    val connectionController = ConnectionController()
     routing {
-        messageSocketRoute(connectionController = ConnectionController())
-        getAllMessages()
+        messageSocketRoute(connectionController)
+        getMessagesRoute(connectionController)
+        getChatsRoute(connectionController)
     }
 }
 
 fun Route.messageSocketRoute(connectionController: ConnectionController) {
-    webSocket("/message-socket") {
+    webSocket("/message") {
         val session = call.sessions.get<MessengerSession>()
         if (session == null) {
             close(CloseReason(CloseReason.Codes.VIOLATED_POLICY, "No session"))
@@ -46,7 +45,8 @@ fun Route.messageSocketRoute(connectionController: ConnectionController) {
             )
             incoming.consumeEach { frame ->
                 if (frame is Frame.Text) {
-                    val decodedString = Json.decodeFromString<MessageReceiveRemote>(frame.readText())
+                    val decodedString =
+                        Json.decodeFromString<MessageReceiveRemote>(frame.readText())
                     connectionController.sendMessage(
                         username = session.username,
                         text = decodedString.text,
@@ -63,10 +63,21 @@ fun Route.messageSocketRoute(connectionController: ConnectionController) {
     }
 }
 
-fun Route.getAllMessages() {
-    get("/messages/{id}") {
+fun Route.getMessagesRoute(connectionController: ConnectionController) {
+    get("/message/{id}") {
         val chatId = call.parameters["id"]
-            ?: return@get call.respond(HttpStatusCode.BadRequest)
-        call.respond(Message.getChatMessages(chatId))
+            ?: return@get
+        call.respond(connectionController.getMessages(chatId))
+    }
+}
+
+fun Route.getChatsRoute(connectionController: ConnectionController) {
+    get("/chat/{username}") {
+        val username = call.parameters["username"]
+            ?: return@get call.respondText(
+                "MissingChat",
+                status = HttpStatusCode.BadRequest
+            )
+        call.respond(connectionController.getChats(username))
     }
 }

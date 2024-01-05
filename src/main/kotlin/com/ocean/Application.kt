@@ -1,8 +1,6 @@
 package com.ocean
 
-import com.ocean.connection.routing.configureChatRouting
-import com.ocean.connection.routing.configureMessageRouting
-import com.ocean.connection.routing.configureUserRouting
+import com.ocean.plugins.configureMessageRouting
 import com.ocean.plugins.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
@@ -30,7 +28,5 @@ fun Application.module() {
     configureSockets()
     configureSecurity()
     configureSerialization()
-    configureUserRouting()
-    configureChatRouting()
     configureMessageRouting()
 }
