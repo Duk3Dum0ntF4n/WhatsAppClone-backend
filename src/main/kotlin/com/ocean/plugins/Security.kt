@@ -12,7 +12,7 @@ fun Application.configureSecurity() {
         cookie<MessengerSession>("SESSION")
     }
 
-    intercept(ApplicationCallPipeline.Features) {
+    intercept(ApplicationCallPipeline.Plugins) {
         if(call.sessions.get<MessengerSession>() == null) {
             val username = call.parameters["username"] ?: "Empty"
             call.sessions.set(MessengerSession(username, generateNonce()))
