@@ -8,7 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.*
 
 @Serializable
-data class ExposedUser(val name: String, val age: Int)
+data class ExposedUserKtor(val name: String, val age: Int)
 class UserService(private val database: Database) {
     object Users : Table() {
         val id = integer("id").autoIncrement()
@@ -27,22 +27,22 @@ class UserService(private val database: Database) {
     suspend fun <T> dbQuery(block: suspend () -> T): T =
         newSuspendedTransaction(Dispatchers.IO) { block() }
 
-    suspend fun create(user: ExposedUser): Int = dbQuery {
+    suspend fun create(user: ExposedUserKtor): Int = dbQuery {
         Users.insert {
             it[name] = user.name
             it[age] = user.age
         }[Users.id]
     }
 
-    suspend fun read(id: Int): ExposedUser? {
+    suspend fun read(id: Int): ExposedUserKtor? {
         return dbQuery {
             Users.select { Users.id eq id }
-                .map { ExposedUser(it[Users.name], it[Users.age]) }
+                .map { ExposedUserKtor(it[Users.name], it[Users.age]) }
                 .singleOrNull()
         }
     }
 
-    suspend fun update(id: Int, user: ExposedUser) {
+    suspend fun update(id: Int, user: ExposedUserKtor) {
         dbQuery {
             Users.update({ Users.id eq id }) {
                 it[name] = user.name

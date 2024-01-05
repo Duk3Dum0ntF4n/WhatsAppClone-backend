@@ -1,9 +1,9 @@
-package com.ocean.data.dto
+package com.ocean.connection.remote
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ChatDTO(
+data class ChatResponseRemote(
     val username: String,
     val id: String
 )

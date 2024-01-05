@@ -1,4 +1,4 @@
-package com.ocean.data.database.exposed
+package com.ocean.database.exposed
 
 data class ExposedChat(
     val user1: String,

@@ -18,7 +18,7 @@ fun Application.configureDatabases() {
     routing {
         // Create user
         post("/chats") {
-            val user = call.receive<ExposedUser>()
+            val user = call.receive<ExposedUserKtor>()
             val id = userService.create(user)
             call.respond(HttpStatusCode.Created, id)
         }
@@ -35,7 +35,7 @@ fun Application.configureDatabases() {
         // Update user
         put("/users/{id}") {
             val id = call.parameters["id"]?.toInt() ?: throw IllegalArgumentException("Invalid ID")
-            val user = call.receive<ExposedUser>()
+            val user = call.receive<ExposedUserKtor>()
             userService.update(id, user)
             call.respond(HttpStatusCode.OK)
         }
