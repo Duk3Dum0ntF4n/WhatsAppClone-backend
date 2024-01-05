@@ -3,7 +3,7 @@ package com.ocean.connection
 import com.ocean.connection.remote.ChatResponseRemote
 import com.ocean.database.Chat
 import com.ocean.database.Message
-import com.ocean.database.exposed.ExposedChat
+import com.ocean.database.User
 import com.ocean.database.exposed.ExposedMessage
 import io.ktor.websocket.Frame
 import io.ktor.websocket.WebSocketSession
@@ -30,6 +30,10 @@ class ConnectionController {
             sessionId = sessionId,
             socket = socket
         )
+    }
+
+    suspend fun ifUserNotExist(username: String): Boolean {
+        return User.ifUserNotExist(username)
     }
 
     suspend fun sendMessage(username: String, text: String, chatId: String) {

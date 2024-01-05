@@ -38,6 +38,9 @@ fun Route.messageSocketRoute(connectionController: ConnectionController) {
             return@webSocket
         }
         try {
+            if(connectionController.ifUserNotExist(session.username)) {
+                throw Exception("No such user")
+            }
             connectionController.onConnect(
                 username = session.username,
                 sessionId = session.sessionId,

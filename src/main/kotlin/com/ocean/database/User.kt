@@ -1,6 +1,5 @@
 package com.ocean.database
 
-import com.ocean.connection.remote.UserResponseRemote
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.select
@@ -13,14 +12,10 @@ object User: Table("user") {
     private suspend fun <T> dbQuery(block: suspend () -> T): T =
         newSuspendedTransaction(Dispatchers.IO) { block() }
 
-    suspend fun findUser(username: String) : UserResponseRemote? {
+    suspend fun ifUserNotExist(username: String) : Boolean {
         return dbQuery {
             User.select { User.username eq username }
-                .map {
-                    UserResponseRemote(it[User.username])
-                }
-                .singleOrNull()
+                .singleOrNull() == null
         }
     }
-
 }
