@@ -3,6 +3,7 @@ package com.ocean.connection
 import com.ocean.connection.remote.ChatResponseRemote
 import com.ocean.database.Chat
 import com.ocean.database.Message
+import com.ocean.database.exposed.ExposedChat
 import com.ocean.database.exposed.ExposedMessage
 import io.ktor.websocket.Frame
 import io.ktor.websocket.WebSocketSession
@@ -40,6 +41,14 @@ class ConnectionController {
                 member.socket.send(Frame.Text(parsedMessage))
             }
         }
+    }
+
+    suspend fun getMessages(chatId: String) : List<ExposedMessage> {
+        return Message.getChatMessages(chatId)
+    }
+
+    suspend fun getChats(username: String): List<ChatResponseRemote> {
+        return Chat.getUserChats(username)
     }
 
     suspend fun tryDisconnect(username: String) {

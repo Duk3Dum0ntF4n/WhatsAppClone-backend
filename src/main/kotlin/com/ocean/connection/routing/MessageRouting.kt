@@ -65,7 +65,7 @@ fun Route.messageSocketRoute(connectionController: ConnectionController) {
 
 fun Route.getAllMessages() {
     get("/messages/{id}") {
-        val chatId = call.parameters["chatId"]
+        val chatId = call.parameters["id"]
             ?: return@get call.respond(HttpStatusCode.BadRequest)
         call.respond(Message.getChatMessages(chatId))
     }

@@ -8,9 +8,9 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
 
-object Message : Table("messages") {
+object Message : Table("message") {
 
-    private val username = Message.varchar("sender", 25)
+    private val username = Message.varchar("username", 25)
     private val text = Message.varchar("text", 500)
     private val chatId = Message.integer("chat_id")
     private val id = Message.integer("id")
