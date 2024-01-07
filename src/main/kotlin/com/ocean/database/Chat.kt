@@ -40,7 +40,7 @@ object Chat : Table("chat") {
                         } else {
                             it[user1]
                         },
-                        id = it[id].toString()
+                        chatId = it[id].toString()
                     )
                 }
         }

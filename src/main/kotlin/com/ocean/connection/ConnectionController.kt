@@ -40,7 +40,7 @@ class ConnectionController {
         val message = ExposedMessage(username, text, chatId)
         Message.createMessage(message)
         members.values.forEach { member ->
-            if (member.chatList.find { it.id == chatId } != null) {
+            if (member.chatList.find { it.chatId == chatId } != null) {
                 val parsedMessage = Json.encodeToString(message)
                 member.socket.send(Frame.Text(parsedMessage))
             }
