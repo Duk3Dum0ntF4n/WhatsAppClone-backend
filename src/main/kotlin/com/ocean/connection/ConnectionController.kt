@@ -21,9 +21,9 @@ class ConnectionController {
         sessionId: String,
         socket: WebSocketSession
     ) {
-        if (members.containsKey(username)) {
-            throw Exception("Member already connected")
-        }
+        //if (members.containsKey(username)) {
+        //    throw Exception("Member already connected")
+        //}
         members[username] = Member(
             username = username,
             chatList = Chat.getUserChats(username),

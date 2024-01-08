@@ -31,7 +31,7 @@ fun Application.configureMessageRouting() {
 }
 
 fun Route.messageSocketRoute(connectionController: ConnectionController) {
-    webSocket("/message") {
+    webSocket("/send_message") {
         val session = call.sessions.get<MessengerSession>()
         if (session == null) {
             close(CloseReason(CloseReason.Codes.VIOLATED_POLICY, "No session"))
@@ -67,7 +67,7 @@ fun Route.messageSocketRoute(connectionController: ConnectionController) {
 }
 
 fun Route.getMessagesRoute(connectionController: ConnectionController) {
-    get("/message/{id}") {
+    get("/show_messages/{id}") {
         val chatId = call.parameters["id"]
             ?: return@get
         call.respond(connectionController.getMessages(chatId))
