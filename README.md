@@ -17,3 +17,6 @@
 - Ktor
 - Kotlin exposed
 - Kotlin serialization
+
+- Все права зарегистрированы
+- ©Duk3Dum0ntF4n
